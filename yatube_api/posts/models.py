@@ -59,4 +59,3 @@ class Follow(models.Model):
                 name='prevent_self_follow',
             )
         ]
-
