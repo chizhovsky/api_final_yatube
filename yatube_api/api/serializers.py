@@ -25,14 +25,11 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only=True,
         default=serializers.CurrentUserDefault()
     )
-    post = serializers.PrimaryKeyRelatedField(
-        read_only=True
-    )
 
     class Meta:
         model = Comment
         fields = '__all__'
-        read_only_fields = ('post', 'author')
+        read_only_fields = ('post',)
 
 
 class FollowSerializer(serializers.ModelSerializer):
@@ -57,9 +54,9 @@ class FollowSerializer(serializers.ModelSerializer):
             )
         ]
 
-    def validate(self, data):
-        if data['user'] == data['following']:
+    def validate_following(self, value):
+        if value == self.context['request'].user:
             raise serializers.ValidationError(
                 'Невозможна подписка на себя.'
             )
-        return data
+        return value
